@@ -7,8 +7,8 @@ const options = {
   cert: fs.readFileSync('certificate.crt')
 };
 
-require('http').createServer((req, res) => {
-//require('https').createServer(options, (req, res) => {
+//require('http').createServer((req, res) => {
+require('https').createServer(options, (req, res) => {
   let file = req.url.slice(1) || 'index.html';
 
   console.info(file);
