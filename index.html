@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PWA Test</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div>
+    <div id="header">
+        <h1>PWA Test</h1>
+    </div>
+</div>
+
+<button>Say Hello</button>
+
+<img src="cats.png" />
+    <script>
+        window.onerror = function(error) {
+          document.write(JSON.stringify(error));
+        };
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async function (){
+              navigator.serviceWorker.register('worker.js')
+
+              let deferredPromt;
+              window.addEventListener('beforeinstallprompt', e => {
+                e.preventDefault();
+                deferredPromt = e
+                button.style.display = 'block';
+              })
+
+              let button = document.querySelector('button');
+                button.style.display = 'none';
+
+
+
+              button.addEventListener('click', e => {
+                button.style.display = 'none';
+
+                deferredPromt.promt();
+
+                return new Promise((resolve, reject) => {
+                  var msg_chan = new MessageChannel();
+
+                  // Handler for recieving message reply from service worker
+                  msg_chan.port1.onmessage = function (event) {
+                    if (event.data.error) {
+                      reject(event.data.error);
+                    } else {
+                      resolve(event.data);
+                    }
+                  };
+
+                  navigator.serviceWorker.controller.postMessage('test', [msg_chan.port2])
+                }).then(d => console.info(d))
+
+                })
+              });
+
+            navigator.serviceWorker.addEventListener('message', e => {
+              console.info('E ' + e.data)
+            });
+
+          window.addEventListener('appinstalled', (evt) => {
+            console.log('a2hs', 'installed');
+          });
+
+        } else {
+            alert('not supported');
+        }
+    </script>
+</body>
+</html>
