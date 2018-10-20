@@ -1,3 +1,5 @@
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080
+var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 var fs = require('fs')
 
 const options = {
@@ -22,6 +24,6 @@ require('https').createServer(options, (req, res) => {
 
     res.end(data);
   })
-}).listen(3001, function(){
+}).listen(port, ip, function(){
   console.info(3001);
 });
