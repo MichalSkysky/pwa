@@ -25,5 +25,5 @@ require('http').createServer((req, res) => {
     res.end(data);
   })
 }).listen(port, ip, function(){
-  console.info(3001);
+  console.info(port, ip);
 });
